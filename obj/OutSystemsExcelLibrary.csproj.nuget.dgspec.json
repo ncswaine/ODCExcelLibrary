@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj": {}
+    "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj": {}
   },
   "projects": {
-    "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj": {
+    "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
+        "projectUniqueName": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
         "projectName": "OutSystemsExcelLibrary",
-        "projectPath": "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
+        "projectPath": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
         "packagesPath": "/Users/andreasekoyoga/.nuget/packages/",
-        "outputPath": "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/obj/",
+        "outputPath": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/andreasekoyoga/.nuget/NuGet/NuGet.Config"
