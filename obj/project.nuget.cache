@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "pUgC2Yhzj40RgMR4ds9t9wQnLGOanMZJCVVucvuM9+ajoGwNY31UTof3ROR7UiuGReIrTgO5P9Iig4BOQGcOTQ==",
+  "dgSpecHash": "gxhjxHsm6rTx+LnBo4uC0oP47UlGMxWlt/VrEyCfR31m1JCCN2sbpNOe01xY4kZ1RQihMovPjeJanOvH3T1h+w==",
   "success": true,
-  "projectFilePath": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
+  "projectFilePath": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLib/ODCExcelLibrary/ODCExcelLibrary.csproj",
   "expectedPackageFiles": [
     "/Users/andreasekoyoga/.nuget/packages/epplus/7.1.2/epplus.7.1.2.nupkg.sha512",
     "/Users/andreasekoyoga/.nuget/packages/epplus.interfaces/6.1.1/epplus.interfaces.6.1.1.nupkg.sha512",
