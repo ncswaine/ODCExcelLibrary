@@ -1110,11 +1110,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
+      "projectUniqueName": "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
       "projectName": "OutSystemsExcelLibrary",
-      "projectPath": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
+      "projectPath": "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/OutSystemsExcelLibrary.csproj",
       "packagesPath": "/Users/andreasekoyoga/.nuget/packages/",
-      "outputPath": "/Users/andreasekoyoga/Documents/Net Code/ODCExcelLibrary/obj/",
+      "outputPath": "/Users/andreasekoyoga/Documents/Net Code/ExcelLib/ODCExcelLibrary/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/andreasekoyoga/.nuget/NuGet/NuGet.Config"
