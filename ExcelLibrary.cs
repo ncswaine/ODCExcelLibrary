@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using OfficeOpenXml.DataValidation;
 using OfficeOpenXml.DataValidation.Contracts;
+using OutSystems.ExternalLibraries.SDK;
 
 namespace OutSystems.ExternalLib.Excel;
 
@@ -407,8 +408,14 @@ public class ExcelLibrary : IExcelLibrary
     {
         using (var package = Excel_Open(excelBinary))
         {
-            ExcelRange? excelRanges = Cell_Selections(package, startCellRow, startCellColumn, endCellRow, endCellColumn, cellName ?? "", sheetName);
-            
+            ExcelRange? excelRanges;
+
+            try {
+                excelRanges = Cell_Selections(package, startCellRow, startCellColumn, endCellRow, endCellColumn, cellName ?? "", sheetName);
+            } catch {
+                return package.GetAsByteArray();
+            }
+
             if(excelRanges == null) {
                 return package.GetAsByteArray();
             }
@@ -475,7 +482,12 @@ public class ExcelLibrary : IExcelLibrary
     {
         using (var package = Excel_Open(excelBinary))
         {
-            ExcelRange? excelRanges = Cell_Selections(package, cellRow, cellColumn, 0, 0, cellName ?? "", sheetName);
+            ExcelRange? excelRanges;
+            try {
+                excelRanges = Cell_Selections(package, cellRow, cellColumn, 0, 0, cellName ?? "", sheetName);
+            } catch {
+                return "";
+            }
             
             if(excelRanges == null) {
                 return "";
@@ -488,48 +500,19 @@ public class ExcelLibrary : IExcelLibrary
         }
     }
 
-    public CellValue[] CellRange_Read(byte[] excelBinary, CellRange_Read[] cellRange_Reads)
-    {
-        List<CellValue> cellValues = new List<CellValue>();
-         
-        using (var package = Excel_Open(excelBinary))
-        {
-            foreach(CellRange_Read cellRange_Read in cellRange_Reads) {
-                ExcelRange? excelRanges = Cell_Selections(package, cellRange_Read.CellRange.StartCellRow, cellRange_Read.CellRange.StartCellColumn, cellRange_Read.CellRange.EndCellRow, cellRange_Read.CellRange.EndCellRow, cellRange_Read.CellName ?? "", cellRange_Read.SheetName);
-                
-                if(excelRanges != null) {
-                    foreach(var row in excelRanges) {
-                        foreach(var column in row) {
-                            string? cellValueVar = Convert.ToString(column.Value);
-                            if (cellValueVar != null) {
-                                string[] cellStr = SplitRegex(row.Address);
-                                int cellRowVar = Int32.Parse(cellStr[1]);
-                                int cellColumnVar = columnNumber(cellStr[0]);
-                                CellValue cellValue = new CellValue();
-                                cellValue.CellRow = cellRowVar;
-                                cellValue.Value = cellValueVar;
-                                cellValue.CellColumn = cellColumnVar;
-                                cellValue.CellName = row.Address;
-                                cellValues.Add(cellValue);
- 
-                                // Console.WriteLine("Row: " + cellRowVar + " Col: " + cellColumnVar +" Cell: " + row.Address + " Value: " + column.Value);
-                            };
-                        }
-                    }
-                }
-            }
-            return cellValues.ToArray();
-        }
-    }
-
-
     public byte[] Cell_Merge(byte[] excelBinary, CellMerge[] cellMerges)
     {
         using (var package = Excel_Open(excelBinary))
         {
             foreach(CellMerge cellMerge in cellMerges) {
-                ExcelRange? excelRanges = Cell_Selections(package, cellMerge.CellRange.StartCellRow, cellMerge.CellRange.StartCellColumn, cellMerge.CellRange.EndCellRow, cellMerge.CellRange.EndCellColumn, cellMerge.CellName ?? "", cellMerge.SheetName);
-                
+                ExcelRange? excelRanges;
+                try {
+                    excelRanges = Cell_Selections(package, cellMerge.CellRange.StartCellRow, cellMerge.CellRange.StartCellColumn, cellMerge.CellRange.EndCellRow, cellMerge.CellRange.EndCellColumn, cellMerge.CellName ?? "", cellMerge.SheetName);
+
+                } catch {
+                    return package.GetAsByteArray();
+                }
+
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
                 }
@@ -546,8 +529,14 @@ public class ExcelLibrary : IExcelLibrary
         using (var package = Excel_Open(excelBinary))
         {
             foreach(CellMerge cellUnMerge in cellUnMerges) {
-                ExcelRange? excelRanges = Cell_Selections(package, cellUnMerge.CellRange.StartCellRow, cellUnMerge.CellRange.StartCellColumn, cellUnMerge.CellRange.EndCellRow, cellUnMerge.CellRange.EndCellColumn, cellUnMerge.CellName ?? "", cellUnMerge.SheetName);
-                
+                ExcelRange? excelRanges;
+                try {
+                    excelRanges = Cell_Selections(package, cellUnMerge.CellRange.StartCellRow, cellUnMerge.CellRange.StartCellColumn, cellUnMerge.CellRange.EndCellRow, cellUnMerge.CellRange.EndCellColumn, cellUnMerge.CellName ?? "", cellUnMerge.SheetName);
+
+                } catch {
+                    return package.GetAsByteArray();
+                }
+
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
                 }
@@ -559,14 +548,20 @@ public class ExcelLibrary : IExcelLibrary
         }
     }
 
-    public byte[] Cell_Write(byte[] excelBinary, CellWrite[] cellWrites)
+    public byte[] Cell_Write(byte[] excelBinary, CellWrite[] cellWrites, CellCopy? cellCopy = null)
     {
         using (var package = Excel_Open(excelBinary))
         {
             foreach(CellWrite cellWrite in cellWrites) {
                 ExcelWorksheet worksheet = Worksheet_Select(package, cellWrite.SheetName);
-                
-                ExcelRange? excelRanges = Cell_Selections(package, cellWrite.Cell.CellRow, cellWrite.Cell.CellColumn, 0, 0, cellWrite.CellName ?? "", cellWrite.SheetName);
+
+                ExcelRange? excelRanges;
+                try {
+                    excelRanges = Cell_Selections(package, cellWrite.Cell.CellRow, cellWrite.Cell.CellColumn, 0, 0, cellWrite.CellName ?? "", cellWrite.SheetName);
+
+                } catch {
+                    return package.GetAsByteArray();
+                } 
                 
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
@@ -599,6 +594,21 @@ public class ExcelLibrary : IExcelLibrary
                 worksheet = Cell_Format(excelRanges, cellWrite.CellFormat);
 
             }
+
+            // Console.WriteLine("Row: " + cellCopy.GetValueOrDefault().SourceCell.CellRow);
+            // Console.WriteLine("Col: " + cellCopy.GetValueOrDefault().SourceCell.CellColumn);
+            // Console.WriteLine("Source Name: " + cellCopy.GetValueOrDefault().SourceCellName);
+            // Console.WriteLine("StartRow: " + cellCopy.GetValueOrDefault().DestinationCell.StartCellRow);
+            // Console.WriteLine("StartCol: " + cellCopy.GetValueOrDefault().DestinationCell.StartCellColumn);
+            // Console.WriteLine("EndRow: " + cellCopy.GetValueOrDefault().DestinationCell.EndCellRow);
+            // Console.WriteLine("EndCol: " + cellCopy.GetValueOrDefault().DestinationCell.EndCellColumn);
+            // Console.WriteLine("Dest Name: " + cellCopy.GetValueOrDefault().DestinationCellName);
+            // Console.WriteLine("IsEmpty: " + cellCopy.GetValueOrDefault().IsEmpty());
+
+            if(!cellCopy.GetValueOrDefault().IsEmpty()) {
+                return Cell_Copy(package.GetAsByteArray(), cellCopy.GetValueOrDefault());
+            }
+
             return package.GetAsByteArray();
         }        
     }
@@ -607,8 +617,10 @@ public class ExcelLibrary : IExcelLibrary
     {
         using (var package = Excel_Open(excelBinary))
         {
+
             ExcelWorksheet worksheet = Worksheet_Select(package, cellCopy.SheetName);
             ExcelRange? sourceExcelRange = Cell_Selections(package, cellCopy.SourceCell.CellRow, cellCopy.SourceCell.CellColumn, 0,0, cellCopy.SourceCellName, cellCopy.SheetName);
+
             if(sourceExcelRange == null) {
                 return package.GetAsByteArray();
             }
@@ -617,6 +629,7 @@ public class ExcelLibrary : IExcelLibrary
             int sourceCol = sourceExcelRange.Start.Column;
 
             ExcelRange? destExcelRange = Cell_Selections(package, cellCopy.DestinationCell.StartCellRow, cellCopy.DestinationCell.StartCellColumn, cellCopy.DestinationCell.EndCellRow, cellCopy.DestinationCell.EndCellColumn, cellCopy.DestinationCellName, cellCopy.SheetName);
+
             if(destExcelRange == null) {
                 return package.GetAsByteArray();
             }
@@ -690,7 +703,13 @@ public class ExcelLibrary : IExcelLibrary
         {
             foreach(CellWriteRichText cellWriteRichText in cellWriteRichTexts) {
                 ExcelWorksheet worksheet = Worksheet_Select(package, cellWriteRichText.SheetName);
-                ExcelRange? excelRanges = Cell_Selections(package, cellWriteRichText.Cell.CellRow, cellWriteRichText.Cell.CellColumn, 0, 0, cellWriteRichText.CellName ?? "", cellWriteRichText.SheetName);
+                ExcelRange? excelRanges;
+
+                try {
+                    excelRanges = Cell_Selections(package, cellWriteRichText.Cell.CellRow, cellWriteRichText.Cell.CellColumn, 0, 0, cellWriteRichText.CellName ?? "", cellWriteRichText.SheetName);
+                } catch {
+                    return package.GetAsByteArray();
+                }
                 
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
@@ -913,11 +932,17 @@ public class ExcelLibrary : IExcelLibrary
             }
 
             ExcelWorksheet worksheet = Worksheet_Select(package, cellDataValidation.SheetName);
-            ExcelRange? targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
-            if(targetExcelRange == null) {
+            ExcelRange? targetExcelRange;
+            try {
+                targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+
+            } catch {
                 return package.GetAsByteArray();
             }
 
+            if(targetExcelRange == null) {
+                return package.GetAsByteArray();
+            }
 
             worksheet.DataValidations.AddIntegerValidation(targetExcelRange.Address);
             ExcelDataValidationInt validation = (OfficeOpenXml.DataValidation.ExcelDataValidationInt) Data_Validation_Config(worksheet, targetExcelRange.Address, dataValidation.dataValidationConfig);
@@ -985,7 +1010,14 @@ public class ExcelLibrary : IExcelLibrary
             }
 
             ExcelWorksheet worksheet = Worksheet_Select(package, cellDataValidation.SheetName);
-            ExcelRange? targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+
+            ExcelRange? targetExcelRange;
+            try {
+                targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+            } catch {
+                return package.GetAsByteArray();
+            }
+
             if(targetExcelRange == null) {
                 return package.GetAsByteArray();
             }
@@ -1047,8 +1079,8 @@ public class ExcelLibrary : IExcelLibrary
                     throw new System.NullReferenceException("Formula 2 Value is not Date Time!");
                 }
 
-                 Console.WriteLine("Val A: " + ValA);
-                 Console.WriteLine("Val B: " + ValB);
+                // Console.WriteLine("Val A: " + ValA);
+                // Console.WriteLine("Val B: " + ValB);
 
                 if( ! (ValB > ValA)) {
                     throw new System.NullReferenceException("Formula 1 and Formula 2 (Greater Than) Value required for between and not between Operator!");
@@ -1057,7 +1089,15 @@ public class ExcelLibrary : IExcelLibrary
             }
 
             ExcelWorksheet worksheet = Worksheet_Select(package, cellDataValidation.SheetName);
-            ExcelRange? targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+
+            ExcelRange? targetExcelRange;
+            try {
+                targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+
+            } catch {
+                return package.GetAsByteArray();
+            }
+
             if(targetExcelRange == null) {
                 return package.GetAsByteArray();
             }
@@ -1106,7 +1146,14 @@ public class ExcelLibrary : IExcelLibrary
         using (var package = Excel_Open(excelBinary))
         {
             ExcelWorksheet worksheet = Worksheet_Select(package, cellDataValidation.SheetName);
-            ExcelRange? targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+
+            ExcelRange? targetExcelRange;
+            try {
+                targetExcelRange = Cell_Selections(package, cellDataValidation.CellRange.StartCellRow, cellDataValidation.CellRange.StartCellColumn, cellDataValidation.CellRange.EndCellRow, cellDataValidation.CellRange.EndCellColumn, cellDataValidation.CellName, cellDataValidation.SheetName);
+            } catch {
+                return package.GetAsByteArray();
+            }
+            
             if(targetExcelRange == null) {
                 return package.GetAsByteArray();
             }
@@ -1136,16 +1183,111 @@ public class ExcelLibrary : IExcelLibrary
     }
 
 // ============================================================
+// Public Method Implementation Interface - Range Functions
+// ============================================================
+
+    public byte[] Range_Format(byte[] excelBinary, RangeFormat[] rangeFormats)
+    {
+        using (var package = Excel_Open(excelBinary))
+        {
+            ExcelRange? excelRanges;
+            foreach(RangeFormat rangeFormat in rangeFormats) {
+                try {
+                    excelRanges = Cell_Selections(package, rangeFormat.CellRange.StartCellRow, rangeFormat.CellRange.StartCellColumn, rangeFormat.CellRange.EndCellRow, rangeFormat.CellRange.EndCellColumn, rangeFormat.CellName ?? "", rangeFormat.SheetName);
+
+                } catch {
+                    return package.GetAsByteArray();
+                }
+                
+                if(excelRanges == null) {
+                    return package.GetAsByteArray();
+                }
+                Cell_Format(excelRanges, rangeFormat.CellFormat);
+            }
+            return package.GetAsByteArray();
+        }
+    }
+
+    public byte[] Range_BorderFormat(byte[] excelBinary, RangeBorderFormat[] rangeBorderFormats)
+    {
+        using (var package = Excel_Open(excelBinary))
+        {
+            ExcelRange? excelRanges;
+
+            foreach(RangeBorderFormat rangeBorderFormat in rangeBorderFormats) {
+                try {
+                    excelRanges = Cell_Selections(package, rangeBorderFormat.CellRange.StartCellRow, rangeBorderFormat.CellRange.StartCellColumn, rangeBorderFormat.CellRange.EndCellRow, rangeBorderFormat.CellRange.EndCellColumn, rangeBorderFormat.CellName ?? "", rangeBorderFormat.SheetName);
+                } catch {
+                    return package.GetAsByteArray();
+                }
+
+                ExcelWorksheet worksheet = Worksheet_Select(package, rangeBorderFormat.SheetName);
+                if(excelRanges == null) {
+                    // Console.WriteLine("Range Null");
+                    return package.GetAsByteArray();
+                }
+                worksheet = Border_Format(excelRanges, rangeBorderFormat.borderStyleFormat);
+            }
+            return package.GetAsByteArray();
+        }
+    }
+
+    public RangeCellValue[] Range_CellRead(byte[] excelBinary, RangeCellRead[] rangeCellReads)
+    {
+        List<RangeCellValue> rangeCellValues = new List<RangeCellValue>();
+         
+        using (var package = Excel_Open(excelBinary))
+        {
+            ExcelRange? excelRanges;
+            foreach(RangeCellRead rangeCellRead in rangeCellReads) {
+                try {
+                    excelRanges = Cell_Selections(package, rangeCellRead.CellRange.StartCellRow, rangeCellRead.CellRange.StartCellColumn, rangeCellRead.CellRange.EndCellRow, rangeCellRead.CellRange.EndCellRow, rangeCellRead.CellName ?? "", rangeCellRead.SheetName);
+                } catch {
+                    return rangeCellValues.ToArray();
+                }
+
+                if(excelRanges != null) {
+                    foreach(var row in excelRanges) {
+                        foreach(var column in row) {
+                            string? cellValueVar = Convert.ToString(column.Value);
+                            if (cellValueVar != null) {
+                                string[] cellStr = SplitRegex(row.Address);
+                                int cellRowVar = Int32.Parse(cellStr[1]);
+                                int cellColumnVar = columnNumber(cellStr[0]);
+                                RangeCellValue rangeCellValue = new RangeCellValue();
+                                rangeCellValue.CellRow = cellRowVar;
+                                rangeCellValue.Value = cellValueVar;
+                                rangeCellValue.CellColumn = cellColumnVar;
+                                rangeCellValue.CellName = row.Address;
+                                rangeCellValues.Add(rangeCellValue);
+                            };
+                        }
+                    }
+                }
+            }
+            return rangeCellValues.ToArray();
+        }
+    }
+
+
+// ============================================================
 // Public Method Implementation Interface - Miscellaneous
 // ============================================================
 
     public byte[] Data_WriteJSON(byte[] excelBinary, DataWriteJSON[] dataWriteJSONs) {
         using (var package = Excel_Open(excelBinary)) {
+            ExcelRange? excelRanges;
 
             foreach(DataWriteJSON dataWriteJSON in dataWriteJSONs) {
 //                var jsonItems = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<System.Dynamic.ExpandoObject>>(dataWriteJSON.JSONString);
                 var jsonItems = JsonConvert.DeserializeObject<IEnumerable<System.Dynamic.ExpandoObject>>(dataWriteJSON.JSONString);
-                ExcelRange? excelRanges = Cell_Selections(package, dataWriteJSON.Cell.CellRow, dataWriteJSON.Cell.CellColumn, 0, 0, dataWriteJSON.CellName ?? "", dataWriteJSON.SheetName);
+
+                try {
+                    excelRanges = Cell_Selections(package, dataWriteJSON.Cell.CellRow, dataWriteJSON.Cell.CellColumn, 0, 0, dataWriteJSON.CellName ?? "", dataWriteJSON.SheetName);
+                } catch {
+                    return package.GetAsByteArray();
+                }
+                
                 
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
@@ -1176,21 +1318,6 @@ public class ExcelLibrary : IExcelLibrary
         }
     }
 
-    public byte[] Range_Format(byte[] excelBinary, RangeFormat[] rangeFormats)
-    {
-        using (var package = Excel_Open(excelBinary))
-        {
-            foreach(RangeFormat rangeFormat in rangeFormats) {
-                ExcelRange? excelRanges = Cell_Selections(package, rangeFormat.CellRange.StartCellRow, rangeFormat.CellRange.StartCellColumn, rangeFormat.CellRange.EndCellRow, rangeFormat.CellRange.EndCellColumn, rangeFormat.CellName ?? "", rangeFormat.SheetName);
-                
-                if(excelRanges == null) {
-                    return package.GetAsByteArray();
-                }
-                Cell_Format(excelRanges, rangeFormat.CellFormat);
-            }
-            return package.GetAsByteArray();
-        }
-    }
 
 
     public byte[] Image_Insert(byte[] excelBinary, byte[] imageFile, int imageSizePercent = 100, int imageWidth = 0, int imageHeight = 0, int cellRow = 0, int cellColumn = 0, string? cellName = null, string? sheetName = null ) {
@@ -1198,8 +1325,13 @@ public class ExcelLibrary : IExcelLibrary
         using (var package = Excel_Open(excelBinary))
         {
             ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
-            
-            ExcelRange? excelRanges = Cell_Selections(package, cellRow, cellColumn, 0, 0, cellName ?? "", sheetName);
+
+            ExcelRange? excelRanges;
+            try {
+                excelRanges = Cell_Selections(package, cellRow, cellColumn, 0, 0, cellName ?? "", sheetName);
+            } catch {
+                return package.GetAsByteArray();
+            }
             
             if(excelRanges == null) {
                 return package.GetAsByteArray();
@@ -1224,23 +1356,6 @@ public class ExcelLibrary : IExcelLibrary
         }
     }
 
-    public byte[] Range_BorderFormat(byte[] excelBinary, RangeBorderFormat[] rangeBorderFormats)
-    {
-        using (var package = Excel_Open(excelBinary))
-        {
-            foreach(RangeBorderFormat rangeBorderFormat in rangeBorderFormats) {
-                ExcelRange? excelRanges = Cell_Selections(package, rangeBorderFormat.CellRange.StartCellRow, rangeBorderFormat.CellRange.StartCellColumn, rangeBorderFormat.CellRange.EndCellRow, rangeBorderFormat.CellRange.EndCellColumn, rangeBorderFormat.CellName ?? "", rangeBorderFormat.SheetName);
-                ExcelWorksheet worksheet = Worksheet_Select(package, rangeBorderFormat.SheetName);
-                if(excelRanges == null) {
-                    // Console.WriteLine("Range Null");
-                    return package.GetAsByteArray();
-                }
-                worksheet = Border_Format(excelRanges, rangeBorderFormat.borderStyleFormat);
-            }
-            return package.GetAsByteArray();
-        }
-    }
-
     public byte[] Chart_Create(byte[] excelBinary, string? sheetName)
     {
         throw new NotImplementedException();
@@ -1254,10 +1369,16 @@ public class ExcelLibrary : IExcelLibrary
     {
         using (var package = Excel_Open(excelBinary))
         {
+            ExcelRange? excelRanges;
+
             foreach(CommentAdd commentAdd in commentAdds) {
                 ExcelWorksheet worksheet = Worksheet_Select(package, commentAdd.SheetName);
 
-                ExcelRange? excelRanges = Cell_Selections(package, commentAdd.Cell.CellRow, commentAdd.Cell.CellColumn, 0, 0, commentAdd.CellName ?? "", commentAdd.SheetName);
+                try {
+                    excelRanges = Cell_Selections(package, commentAdd.Cell.CellRow, commentAdd.Cell.CellColumn, 0, 0, commentAdd.CellName ?? "", commentAdd.SheetName);
+                } catch {
+                    return package.GetAsByteArray();
+                }
                 
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
@@ -1274,10 +1395,16 @@ public class ExcelLibrary : IExcelLibrary
     {
         using (var package = Excel_Open(excelBinary))
         {
+            ExcelRange? excelRanges;
+
             foreach(CommentDelete commentDelete in commentDeletes) {
                 ExcelWorksheet worksheet = Worksheet_Select(package, commentDelete.SheetName);
 
-                ExcelRange? excelRanges = Cell_Selections(package, commentDelete.Cell.CellRow, commentDelete.Cell.CellColumn, 0, 0, commentDelete.CellName ?? "", commentDelete.SheetName);
+                try {
+                    excelRanges = Cell_Selections(package, commentDelete.Cell.CellRow, commentDelete.Cell.CellColumn, 0, 0, commentDelete.CellName ?? "", commentDelete.SheetName);
+                } catch {
+                    return package.GetAsByteArray();
+                }
                 
                 if(excelRanges == null) {
                     return package.GetAsByteArray();

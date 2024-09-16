@@ -2,20 +2,20 @@ using OutSystems.ExternalLibraries.SDK;
 
 namespace OutSystems.ExternalLib.Excel {
 
-    [OSInterface(Name = "Excel_Library", Description = "Library for Microsoft Excel", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png")]
+    [OSInterface(Name = "Excel_Library", Description = "Library for Microsoft Excel", IconResourceName = "ODCExcelLibrary.resources.excel.png")]
     public interface IExcelLibrary {
 
 // ============================================================
 // Interface For Workbook
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Workbook_Create", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Create a New Workbook Excel File")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Workbook_Create", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Create a New Workbook Excel File")]
         public byte[] Workbook_Create(Worksheet[] worksheets);
 
-        [OSAction(ReturnName = "Worksheets", OriginalName="Workbook_GetWorksheet", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Get Worksheets Properties in the Spreadsheet")]
+        [OSAction(ReturnName = "Worksheets", OriginalName="Workbook_GetWorksheet", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Get Worksheets Properties in the Spreadsheet")]
         public Worksheet[] Workbook_GetWorksheet(byte[] excelBinary);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Workbook_SetProperties", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Set Workbook Document Properties")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Workbook_SetProperties", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Set Workbook Document Properties")]
         public byte[] Workbook_SetProperties(byte[] excelBinary, WorkbookProperties workbookProperties);
 
 
@@ -24,136 +24,139 @@ namespace OutSystems.ExternalLib.Excel {
 // ============================================================
 
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Add", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Add Single Worksheet on Existing Excel File")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Add", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Add Single Worksheet on Existing Excel File")]
         public byte[] Worksheet_Add(byte[] excelBinary, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_AddList", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Add Multiple Worksheets on Existing Excel File")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_AddList", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Add Multiple Worksheets on Existing Excel File")]
         public byte[] Worksheet_AddList(byte[] excelBinary, Worksheet[] worksheets);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_AutofitColumns", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Set Autofit Cell Column")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_AutofitColumns", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Set Autofit Cell Column")]
         public byte[] Worksheet_AutofitColumns(byte[] excelBinary, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Calculate", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Trigger to Calculate Formula on Specific Worksheet")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Calculate", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Trigger to Calculate Formula on Specific Worksheet")]
         public byte[] Worksheet_Calculate(byte[] excelBinary, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Protect", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Protect Workbook Excel File")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Protect", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Protect Workbook Excel File")]
         public byte[] Worksheet_Protect(byte[] excelBinary, string password, bool? isAllowAutoFilter = false, bool? isAllowDeleteColumns = false, bool? isAllowDeleteRows = false, 
         bool? isAllowEditObject = false, bool? isAllowFormatCells = false, bool? isAllowFormatColumns = false, bool? isAllowFormatRows = false, bool? isAllowInsertColumns = false, 
         bool? isAllowInsertHyperlinks = false, bool? isAllowInsertRows = false, bool? isAllowPivotTables = false, bool? isAllowSelectLockedCells = false, bool? isAllowSelectUnLockedCells = false, 
         bool? isAllowSort = false, bool? isProtected = false, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_AddAutoFilter", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Add Automatic Filter on Existing Excel File")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_AddAutoFilter", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Add Automatic Filter on Existing Excel File")]
         public byte[] Worksheet_AddAutoFilter(byte[] excelBinary, int startCellRow = 0, int startCellColumn = 0, int endCellRow = 0, int endCellColumn = 0, string? cellName = null, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Delete", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Delete Worksheet")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Delete", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Delete Worksheet")]
         public byte[] Worksheet_Delete(byte[] excelBinary, int sheetIndex = 0, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Rename", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Rename", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "")]
         public byte[] Worksheet_Rename(byte[] excelBinary, string newSheetName, int sheetIndex = 0, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Hide_Show", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Hide or Show Worksheet")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Worksheet_Hide_Show", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Hide or Show Worksheet")]
         public byte[] Worksheet_Hide_Show(byte[] excelBinary, int sheetIndex = 0, string? sheetName = null, bool isShow = false);
 
 // ============================================================
 // Interface For Cell
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Write", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Write Value to Cell")]
-        public byte[] Cell_Write(byte[] excelBinary, CellWrite[] cellWrites);
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Write", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Write Value to Cell")]
+        public byte[] Cell_Write(byte[] excelBinary, CellWrite[] cellWrites, CellCopy? cellCopy = null);
 
-        [OSAction(ReturnName = "CellValue", OriginalName="Cell_Read", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Read Value from Cell")]
+        [OSAction(ReturnName = "CellValue", OriginalName="Cell_Read", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Read Value from Cell")]
         public string Cell_Read(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int cellRow = 0, [OSParameter(DataType = OSDataType.Integer, Description = "Column Index start from 1")] int cellColumn = 0, string? cellName = null, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Merge", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Merge Cell")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Merge", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Merge Cell")]
         public byte[] Cell_Merge(byte[] excelBinary, CellMerge[] cellMerges);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_UnMerge", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "UnMerge Cell")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_UnMerge", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "UnMerge Cell")]
         public byte[] Cell_UnMerge(byte[] excelBinary, CellMerge[] cellUnMerges);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Copy", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Copy Single Cell Value to Single / Multiple Destination Cells")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Copy", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Copy Single Cell Value to Single / Multiple Destination Cells")]
         public byte[] Cell_Copy(byte[] excelBinary, CellCopy cellCopy);
 
-        [OSAction(ReturnName = "Cells", OriginalName="Cell_FindByValue", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Find Cells for specific Text Value")]
+        [OSAction(ReturnName = "Cells", OriginalName="Cell_FindByValue", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Find Cells for specific Text Value")]
         public CellFindResult[] Cell_FindByValue(byte[] excelBinary, string cellValue, bool isContain = false, string? cellRange = null, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Write_RichText", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Write Value to Cell in RichText Format")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Write_RichText", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Write Value to Cell in RichText Format")]
         public byte[] Cell_Write_RichText(byte[] excelBinary, CellWriteRichText[] cellWriteRichTexts);
-
-        [OSAction(ReturnName = "ExcelFile", OriginalName="CellRange_Read", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Read Cell Value with Cell Range")]
-        public CellValue[] CellRange_Read(byte[] excelBinary, CellRange_Read[] cellRange_Reads);
-
 
 // ============================================================
 // Interface For Comments
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Comment_Add", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Add Comments")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Comment_Add", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Add Comments")]
         public byte[] Comment_Add(byte[] excelBinary, CommentAdd[] commentAdds);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Comment_Delete", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Delete Comments")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Comment_Delete", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Delete Comments")]
         public byte[] Comment_Delete(byte[] excelBinary, CommentDelete[] commentDeletes);
 
 // ============================================================
 // Interface For Column
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Delete", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Delete Column on specific Column Index")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Delete", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Delete Column on specific Column Index")]
         public byte[] Column_Delete(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Column Index start from 1")] int colIndex, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Hide_Show", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Hide or Show Column on specific Column Index")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Hide_Show", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Hide or Show Column on specific Column Index")]
         public byte[] Column_Hide_Show(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Column Index start from 1")] int colIndex, bool isShow = false, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Insert", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Inserts New Columns into the Spreadsheet. Existing Columns below the Position are Shifted Down.")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Insert", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Inserts New Columns into the Spreadsheet. Existing Columns below the Position are Shifted Down.")]
         public byte[] Column_Insert(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Column Index start from 1")] int colIndex, int colNewAdd = 1, int colWidth = 64, bool isCopyFormatFromSource = false, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Width", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Set Column Width on specific Column Index")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Column_Width", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Set Column Width on specific Column Index")]
         public byte[] Column_Width(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Column Index start from 1")] int colIndex, int colWidth = 64, string? sheetName = null);
 
 // ============================================================
 // Interface For Row
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Delete", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Delete Row on specific Row Index")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Delete", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Delete Row on specific Row Index")]
         public byte[] Row_Delete(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Hide_Show", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Hide or Show Row on specific Row Index")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Hide_Show", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Hide or Show Row on specific Row Index")]
         public byte[] Row_Hide_Show(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, bool isShow = false, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Insert", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Inserts New Rows into the Spreadsheet. Existing Rows below the Position are Shifted Down.")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Insert", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Inserts New Rows into the Spreadsheet. Existing Rows below the Position are Shifted Down.")]
         public byte[] Row_Insert(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, int rowNewAdd = 1, int rowHeight = 20, bool isCopyFormatFromSource = false, string? sheetName = null);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Height", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Set Row Height on specific Row Index")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Row_Height", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Set Row Height on specific Row Index")]
         public byte[] Row_Height(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, int rowHeight = 20, string? sheetName = null);
 
 // ============================================================
 // Public Method Implementation Interface - Data Validations
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_Validation_Integer", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Data Validation Integer")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_Validation_Integer", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Data Validation Integer")]
         public byte[] Data_Validation_Integer(byte[] excelBinary, CellDataValidation cellDataValidation, DataValidation dataValidation);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_Validation_Decimal", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Data Validation Decimal")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_Validation_Decimal", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Data Validation Decimal")]
         public byte[] Data_Validation_Decimal(byte[] excelBinary, CellDataValidation cellDataValidation, DataValidation dataValidation);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_Validation_List", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Data Validation with Dropdown")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_Validation_List", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Data Validation with Dropdown")]
         public byte[] Data_Validation_List(byte[] excelBinary, CellDataValidation cellDataValidation, DataValidationListItem dataValidationListItem);
+
+// ============================================================
+// Interface For Range Functions
+// ============================================================
+
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Range_Format", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Cell Range Formating")]
+        public byte[] Range_Format(byte[] excelBinary, RangeFormat[] rangeFormats);
+
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Range_BorderFormat", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Cell Range Border Formatting")]
+        public byte[] Range_BorderFormat(byte[] excelBinary, RangeBorderFormat[] rangeBorderFormats);
+
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Range_CellRead", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Read Cell Value with Cell Range")]
+        public RangeCellValue[] Range_CellRead(byte[] excelBinary, RangeCellRead[] rangeCellReads);
 
 
 // ============================================================
 // Interface For Miscellaneous
 // ============================================================
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_WriteJSON", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Load JSON Format into Excel Table")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Data_WriteJSON", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Load JSON Format into Excel Table")]
         public byte[] Data_WriteJSON(byte[] excelBinary, DataWriteJSON[] dataWriteJSONs);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Image_Insert", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Inserts Images into the Spreadsheet")]
+        [OSAction(ReturnName = "ExcelFile", OriginalName="Image_Insert", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Inserts Images into the Spreadsheet")]
         public byte[] Image_Insert(byte[] excelBinary, byte[] imageFile, int imageSizePercent = 100, int imageWidth = 0, int imageHeight = 0, int cellRow = 0, int cellColumn = 0, string? cellName = null, string? sheetName = null );
-
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Range_Format", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Cell Range Formating")]
-        public byte[] Range_Format(byte[] excelBinary, RangeFormat[] rangeFormats);
-
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Range_BorderFormat", IconResourceName = "OutSystemsExcelLibrary.resources.excel.png", Description = "Cell Range Border Formatting")]
-        public byte[] Range_BorderFormat(byte[] excelBinary, RangeBorderFormat[] rangeBorderFormats);
 
     }
 }

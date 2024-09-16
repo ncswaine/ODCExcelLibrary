@@ -115,7 +115,7 @@ namespace OutSystems.ExternalLib.Excel {
 
     [OSStructure]
     public struct CellWrite {
-        [OSStructureField(IsMandatory = true, OriginalName = "CellValue")]
+        [OSStructureField(IsMandatory = true, OriginalName = "CellValue", Description = "For Formula, Don't use semicolon as a separator between function arguments. Only comma is supported.")]
         public string CellValue {get;set;}
         public Cell Cell {get;set;}
         string? cellName;
@@ -163,6 +163,8 @@ namespace OutSystems.ExternalLib.Excel {
 
         public string CellName { get { return cellName ?? ""; } set { cellName = value; } }
         public string SheetName { get { return sheetName ?? ""; } set { sheetName = value; } }
+
+        [OSStructureField(Description = "Based on https://epplussoftware.com/docs/5.2/api/OfficeOpenXml.Table.TableStyles.html", OriginalName = "TableStyle")]
         public string TableStyle { get { return tableStyle ?? ""; } set { tableStyle = value; } }
     }
 
@@ -187,6 +189,15 @@ namespace OutSystems.ExternalLib.Excel {
         public string SourceCellName { get { return sourceCellName ?? ""; } set { sourceCellName = value; } }
         public string DestinationCellName { get { return destinationCellName ?? ""; } set { destinationCellName = value; } }
         public string SheetName { get { return sheetName ?? ""; } set { sheetName = value; } }
+
+        public readonly bool IsEmpty() {
+            if (((SourceCell.CellRow == 0 || SourceCell.CellColumn == 0) &&  (sourceCellName == "" || sourceCellName == null) ) || 
+            ((DestinationCell.StartCellRow == 0 || DestinationCell.StartCellColumn == 0 || DestinationCell.EndCellRow == 0 || DestinationCell.EndCellRow == 0) && (destinationCellName == "" || destinationCellName == null))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
     }
 
@@ -365,7 +376,7 @@ namespace OutSystems.ExternalLib.Excel {
     }
 
     [OSStructure]
-    public struct CellValue {
+    public struct RangeCellValue {
         int? cellRow;
         int? cellColumn;
 
@@ -377,7 +388,7 @@ namespace OutSystems.ExternalLib.Excel {
     }    
 
     [OSStructure]
-    public struct CellRange_Read {
+    public struct RangeCellRead {
         public CellRange CellRange {get;set;}
         string? cellName;
         string? sheetName;
