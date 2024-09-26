@@ -144,7 +144,7 @@ namespace OutSystems.ExternalLib.Excel {
         [OSAction(ReturnName = "ExcelFile", OriginalName="Range_BorderFormat", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Cell Range Border Formatting")]
         public byte[] Range_BorderFormat(byte[] excelBinary, RangeBorderFormat[] rangeBorderFormats);
 
-        [OSAction(ReturnName = "ExcelFile", OriginalName="Range_CellRead", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Read Cell Value with Cell Range")]
+        [OSAction(ReturnName = "RangeCellValue", OriginalName="Range_CellRead", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Read Cell Value with Cell Range")]
         public RangeCellValue[] Range_CellRead(byte[] excelBinary, RangeCellRead[] rangeCellReads);
 
 
