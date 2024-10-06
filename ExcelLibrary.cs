@@ -1241,7 +1241,7 @@ public class ExcelLibrary : IExcelLibrary
             ExcelRange? excelRanges;
             foreach(RangeCellRead rangeCellRead in rangeCellReads) {
                 try {
-                    excelRanges = Cell_Selections(package, rangeCellRead.CellRange.StartCellRow, rangeCellRead.CellRange.StartCellColumn, rangeCellRead.CellRange.EndCellRow, rangeCellRead.CellRange.EndCellRow, rangeCellRead.CellName ?? "", rangeCellRead.SheetName);
+                    excelRanges = Cell_Selections(package, rangeCellRead.CellRange.StartCellRow, rangeCellRead.CellRange.StartCellColumn, rangeCellRead.CellRange.EndCellRow, rangeCellRead.CellRange.EndCellColumn, rangeCellRead.CellName ?? "", rangeCellRead.SheetName);
                 } catch {
                     return rangeCellValues.ToArray();
                 }
