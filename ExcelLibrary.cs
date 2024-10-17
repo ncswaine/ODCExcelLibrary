@@ -125,13 +125,13 @@ public class ExcelLibrary : IExcelLibrary
 
         if(CellName != null && CellName != "") {
             // Console.WriteLine("Name");
-            var r = new Regex("^([a-zA-Z]{1,2})([0-9]+)$");
+            var r = new Regex("^([a-zA-Z]{1,7})([0-9]+)$");
             if(r.IsMatch(CellName)) {
                 // Console.WriteLine("Cell Name Match with Regex Single Cell");
                 ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
                 return worksheet.Cells[CellName];
             } else {
-                var r2 = new Regex("^([a-zA-Z]{1,2})([0-9]{1,3})[:]([a-zA-Z]{1,2})([0-9]{1,3})$");
+                var r2 = new Regex("^([a-zA-Z]{1,7})([0-9]{1,7})[:]([a-zA-Z]{1,7})([0-9]{1,7})$");
                 if(r2.IsMatch(CellName)) {
                     // Console.WriteLine("Cell Name Match with Regex Multi Cell");
                     ExcelWorksheet worksheet2 = Worksheet_Select(package, sheetName);
@@ -139,7 +139,7 @@ public class ExcelLibrary : IExcelLibrary
                 } else {
                     // Console.WriteLine("Cell Name NOT Match with Regex");
 
-                    var r3 = new Regex("^([a-zA-Z]{1,2})[:]([a-zA-Z]{1,2})$");
+                    var r3 = new Regex("^([a-zA-Z]{1,7})[:]([a-zA-Z]{1,7})$");
                     if(r3.IsMatch(CellName)) {
                         // Console.WriteLine("Cell Name Match with Regex Multi Cell - 3");
                         ExcelWorksheet worksheet3 = Worksheet_Select(package, sheetName);
