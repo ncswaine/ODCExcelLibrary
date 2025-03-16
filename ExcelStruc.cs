@@ -396,4 +396,10 @@ namespace OutSystems.ExternalLib.Excel {
         public string SheetName { get { return sheetName ?? ""; } set { sheetName = value; } }
     }
 
+    [OSStructure]
+    public struct ExcelMerge {
+        public byte[] ExcelBinary {get;set;}
+    }
+
+
 }

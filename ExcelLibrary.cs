@@ -124,45 +124,62 @@ public class ExcelLibrary : IExcelLibrary
         }
 
         if(CellName != null && CellName != "") {
-            // Console.WriteLine("Name");
+            Console.WriteLine("Name: " + CellName);
             var r = new Regex("^([a-zA-Z]{1,7})([0-9]+)$");
             if(r.IsMatch(CellName)) {
-                // Console.WriteLine("Cell Name Match with Regex Single Cell");
+                Console.WriteLine("Cell Name Match with Regex Single Cell");
                 ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
                 return worksheet.Cells[CellName];
             } else {
                 var r2 = new Regex("^([a-zA-Z]{1,7})([0-9]{1,7})[:]([a-zA-Z]{1,7})([0-9]{1,7})$");
                 if(r2.IsMatch(CellName)) {
-                    // Console.WriteLine("Cell Name Match with Regex Multi Cell");
+                    Console.WriteLine("Cell Name Match with Regex Multi Cell");
                     ExcelWorksheet worksheet2 = Worksheet_Select(package, sheetName);
                     return worksheet2.Cells[CellName];
                 } else {
-                    // Console.WriteLine("Cell Name NOT Match with Regex");
+                    Console.WriteLine("Cell Name NOT Match with Regex");
 
                     var r3 = new Regex("^([a-zA-Z]{1,7})[:]([a-zA-Z]{1,7})$");
                     if(r3.IsMatch(CellName)) {
-                        // Console.WriteLine("Cell Name Match with Regex Multi Cell - 3");
+                        Console.WriteLine("Cell Name Match with Regex Multi Cell - 3");
                         ExcelWorksheet worksheet3 = Worksheet_Select(package, sheetName);
                         ExcelRange excelRange = worksheet3.Cells[CellName];
 
-                        // Console.WriteLine("Sheet Name: " + excelRange.Worksheet.Name);
-                        // Console.WriteLine("Start Row: " + excelRange.Start.Row);
-                        // Console.WriteLine("Start Col: " + excelRange.Start.Column);
-                        // Console.WriteLine("End Row: " + excelRange.End.Row);
-                        // Console.WriteLine("End Col: " + excelRange.End.Column);
+                        Console.WriteLine("Sheet Name: " + excelRange.Worksheet.Name);
+                        Console.WriteLine("Start Row: " + excelRange.Start.Row);
+                        Console.WriteLine("Start Col: " + excelRange.Start.Column);
+                        Console.WriteLine("End Row: " + excelRange.End.Row);
+                        Console.WriteLine("End Col: " + excelRange.End.Column);
 
                         return excelRange;
                     } else {
-                        var excelNamedRange = package.Workbook.Names[CellName];
-                        ExcelWorksheet worksheet = Worksheet_Select(package, excelNamedRange.Worksheet.Name);
-                        ExcelRange excelRange = worksheet.Cells[excelNamedRange.Start.Row, excelNamedRange.Start.Column, excelNamedRange.End.Row, excelNamedRange.End.Column];
+                        Console.WriteLine("Cell Name Match with Regex Multi Cell - 4");
+                        var r4 = new Regex("^([a-zA-Z]{1,7})$");
+                        if(r4.IsMatch(CellName)) {
+                            Console.WriteLine("Single Column");
+                            CellName = CellName + ":" + CellName;
+                            ExcelWorksheet worksheet3 = Worksheet_Select(package, sheetName);
+                            ExcelRange excelRange = worksheet3.Cells[CellName];
 
-                        // Console.WriteLine("Sheet Name: " + excelNamedRange.Worksheet.Name);
-                        // Console.WriteLine("Start Row: " + excelNamedRange.Start.Row);
-                        // Console.WriteLine("Start Col: " + excelNamedRange.Start.Column);
-                        // Console.WriteLine("End Row: " + excelNamedRange.End.Row);
-                        // Console.WriteLine("End Col: " + excelNamedRange.End.Column);
-                        return excelRange;
+                            Console.WriteLine("Sheet Name: " + excelRange.Worksheet.Name);
+                            Console.WriteLine("Start Row: " + excelRange.Start.Row);
+                            Console.WriteLine("Start Col: " + excelRange.Start.Column);
+                            Console.WriteLine("End Row: " + excelRange.End.Row);
+                            Console.WriteLine("End Col: " + excelRange.End.Column);
+
+                            return excelRange;
+                        } else {
+                            var excelNamedRange = package.Workbook.Names[CellName];
+                            ExcelWorksheet worksheet = Worksheet_Select(package, excelNamedRange.Worksheet.Name);
+                            ExcelRange excelRange = worksheet.Cells[excelNamedRange.Start.Row, excelNamedRange.Start.Column, excelNamedRange.End.Row, excelNamedRange.End.Column];
+
+                            Console.WriteLine("Sheet Name: " + excelNamedRange.Worksheet.Name);
+                            Console.WriteLine("Start Row: " + excelNamedRange.Start.Row);
+                            Console.WriteLine("Start Col: " + excelNamedRange.Start.Column);
+                            Console.WriteLine("End Row: " + excelNamedRange.End.Row);
+                            Console.WriteLine("End Col: " + excelNamedRange.End.Column);
+                            return excelRange;
+                        }
                     }
                 }                
             }
@@ -1359,6 +1376,35 @@ public class ExcelLibrary : IExcelLibrary
     public byte[] Chart_Create(byte[] excelBinary, string? sheetName)
     {
         throw new NotImplementedException();
+    }
+
+    public byte[] Excel_Merge(ExcelMerge[] ExcelFiles)
+    {
+        List<string> sheetNames = new List<string>();
+        int dupCount = 0;
+        using (ExcelPackage resultExcel = new ExcelPackage())
+        {
+            foreach(ExcelMerge excelFile in ExcelFiles) {
+                using (var package = Excel_Open(excelFile.ExcelBinary)) {
+                    for(int sheetIndex=0; sheetIndex<package.Workbook.Worksheets.Count; sheetIndex++) {
+                        ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[sheetIndex];
+                        string sheetName = excelWorksheet.Name;
+                        // Console.WriteLine("Sheet: " + sheetName);
+                        foreach(string str in sheetNames) {
+                            if(str == sheetName) {
+                                sheetName = excelWorksheet.Name + dupCount.ToString();
+                                dupCount++;
+                                // Console.WriteLine("Sheet: " + sheetName + " Duplicate!");
+                            };
+                        }
+                        sheetNames.Add(sheetName);
+                        // Console.WriteLine(sheetNames.Count);
+                        resultExcel.Workbook.Worksheets.Add(sheetName, excelWorksheet);
+                    }
+                }            
+            }
+            return resultExcel.GetAsByteArray();
+        }
     }
 
 // ============================================================

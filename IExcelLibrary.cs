@@ -158,5 +158,7 @@ namespace OutSystems.ExternalLib.Excel {
         [OSAction(ReturnName = "ExcelFile", OriginalName="Image_Insert", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Inserts Images into the Spreadsheet")]
         public byte[] Image_Insert(byte[] excelBinary, byte[] imageFile, int imageSizePercent = 100, int imageWidth = 0, int imageHeight = 0, int cellRow = 0, int cellColumn = 0, string? cellName = null, string? sheetName = null );
 
+        [OSAction(ReturnName = "ExcelFileOutput", OriginalName="Excel_Merge", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Merge Excel Files")]
+        public byte[] Excel_Merge(ExcelMerge[] ExcelFiles);
     }
 }
