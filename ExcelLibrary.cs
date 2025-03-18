@@ -1381,7 +1381,7 @@ public class ExcelLibrary : IExcelLibrary
     public byte[] Excel_Merge(ExcelMerge[] ExcelFiles)
     {
         List<string> sheetNames = new List<string>();
-        int dupCount = 0;
+        int dupCount = 1;
         using (ExcelPackage resultExcel = new ExcelPackage())
         {
             foreach(ExcelMerge excelFile in ExcelFiles) {
@@ -1392,7 +1392,7 @@ public class ExcelLibrary : IExcelLibrary
                         // Console.WriteLine("Sheet: " + sheetName);
                         foreach(string str in sheetNames) {
                             if(str == sheetName) {
-                                sheetName = excelWorksheet.Name + dupCount.ToString();
+                                sheetName = excelWorksheet.Name + "-" + dupCount.ToString();
                                 dupCount++;
                                 // Console.WriteLine("Sheet: " + sheetName + " Duplicate!");
                             };
