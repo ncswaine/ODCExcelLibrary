@@ -78,6 +78,7 @@ namespace OutSystems.ExternalLib.Excel {
 
         [OSAction(ReturnName = "ExcelFile", OriginalName="Cell_Write_RichText", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Write Value to Cell in RichText Format")]
         public byte[] Cell_Write_RichText(byte[] excelBinary, CellWriteRichText[] cellWriteRichTexts);
+        
 
 // ============================================================
 // Interface For Comments
@@ -147,6 +148,9 @@ namespace OutSystems.ExternalLib.Excel {
         [OSAction(ReturnName = "RangeCellValue", OriginalName="Range_CellRead", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Read Cell Value with Cell Range")]
         public RangeCellValue[] Range_CellRead(byte[] excelBinary, RangeCellRead[] rangeCellReads);
 
+        [OSAction(ReturnName = "CellRange", OriginalName="Range_FromAddress", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Get the Cell Range from given address")]
+        public CellRange Range_FromAddress([OSParameter(DataType = OSDataType.Text, Description = "Text address, e.g. AB47 or A11:AB47")] string Address);
+
 
 // ============================================================
 // Interface For Miscellaneous
@@ -160,5 +164,6 @@ namespace OutSystems.ExternalLib.Excel {
 
         [OSAction(ReturnName = "ExcelFileOutput", OriginalName="Excel_Merge", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Merge Excel Files")]
         public byte[] Excel_Merge(ExcelMerge[] ExcelFiles);
+
     }
 }

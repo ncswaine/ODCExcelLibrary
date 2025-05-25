@@ -67,6 +67,16 @@ public class ExcelLibrary : IExcelLibrary
         return worksheet;
     }
 
+
+    private ExcelPackage CreateDummyExcel() {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage package = new ExcelPackage();
+        var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+
+        return package;
+    }
+
+
     private byte[] AddSheets(ExcelPackage package, Worksheet[] worksheets) {
         ExcelWorksheet excelWorksheet;
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -1284,6 +1294,17 @@ public class ExcelLibrary : IExcelLibrary
             }
             return rangeCellValues.ToArray();
         }
+    }
+
+    public CellRange Range_FromAddress(string Address) {
+        CellRange cellRange = new CellRange();
+        ExcelPackage package = CreateDummyExcel();
+        ExcelRange? excelRanges = Cell_Selections(package, 0, 0, 0, 0, Address, "Sheet1");
+        if(excelRanges != null) { 
+            cellRange.StartCellRow = excelRanges.StartCellRow;
+
+        }
+        return cellRange;
     }
 
 
