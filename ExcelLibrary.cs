@@ -40,7 +40,7 @@ public class ExcelLibrary : IExcelLibrary
     public ExcelPackage Excel_Open(byte[] excelBinary)
     {
         Stream stream = new MemoryStream(excelBinary);
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
 
         ExcelTextFormat format = new ExcelTextFormat();
         format.Encoding = new System.Text.UTF8Encoding();
@@ -69,7 +69,7 @@ public class ExcelLibrary : IExcelLibrary
 
 
     private ExcelPackage CreateDummyExcel() {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
         ExcelPackage package = new ExcelPackage();
         var workSheet = package.Workbook.Worksheets.Add("Sheet1");
 
@@ -79,7 +79,7 @@ public class ExcelLibrary : IExcelLibrary
 
     private byte[] AddSheets(ExcelPackage package, Worksheet[] worksheets) {
         ExcelWorksheet excelWorksheet;
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
         using (package)
         {
             if(worksheets.Length > 0) {
@@ -307,22 +307,54 @@ public class ExcelLibrary : IExcelLibrary
 
     public byte[] Workbook_Create(Worksheet[] worksheets)
     {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
         return AddSheets(new ExcelPackage(), worksheets);
     }
 
-    public Worksheet[] Workbook_GetWorksheet(byte[] excelBinary)
+    private WorksheetProperties GetWorksheetProperties(ExcelWorksheet excelWorksheet)
     {
+        WorksheetProperties worksheetProperties = new WorksheetProperties();
+        if (excelWorksheet != null)
+        {
+            worksheetProperties.Index = excelWorksheet.Index;
+            worksheetProperties.Name = excelWorksheet.Name;
+
+            TabProperties tabProperties = new TabProperties();
+            tabProperties.ColorA = excelWorksheet.TabColor.A;
+            tabProperties.ColorR = excelWorksheet.TabColor.R;
+            tabProperties.ColorG = excelWorksheet.TabColor.G;
+            tabProperties.ColorB = excelWorksheet.TabColor.B;
+            tabProperties.ColorHex = ColorTranslator.ToHtml(excelWorksheet.TabColor);
+
+            worksheetProperties.TabProperties = tabProperties;
+
+            DimensionProperties dimensionProperties = new DimensionProperties();
+            dimensionProperties.Address = excelWorksheet.Dimension.Address;
+            dimensionProperties.FullAddress = excelWorksheet.Dimension.FullAddress;
+            dimensionProperties.AddressStart = excelWorksheet.Dimension.Start.Address;
+            dimensionProperties.AddressEnd = excelWorksheet.Dimension.End.Address;
+            dimensionProperties.ColumnStart = excelWorksheet.Dimension.Start.Column;
+            dimensionProperties.ColumnEnd = excelWorksheet.Dimension.End.Column;
+            dimensionProperties.RowStart = excelWorksheet.Dimension.Start.Row;
+            dimensionProperties.RowEnd = excelWorksheet.Dimension.End.Row;
+
+            worksheetProperties.DimensionProperties = dimensionProperties;
+        }
+
+        return worksheetProperties;
+    }
+
+    public WorksheetProperties[] Workbook_GetWorksheet(byte[] excelBinary)
+    {
+        List<WorksheetProperties> worksheetProperties = new List<WorksheetProperties>();
         using (var package = Excel_Open(excelBinary))
         {
             int countWS = package.Workbook.Worksheets.Count;
-            Worksheet[] worksheets = new Worksheet[countWS];
-            for(int i=0;i<countWS;i++) {
-                worksheets[i].Index = i;
-                worksheets[i].Name = package.Workbook.Worksheets[i].Name;
-                worksheets[i].ColorHex = ColorTranslator.ToHtml(package.Workbook.Worksheets[i].TabColor);
+            for (int i = 0; i < countWS; i++)
+            {
+                worksheetProperties.Add(GetWorksheetProperties(package.Workbook.Worksheets[i]));
             }
-            return worksheets;
+            return worksheetProperties.ToArray();
         }
     }
 
@@ -351,16 +383,28 @@ public class ExcelLibrary : IExcelLibrary
         }    
     }
 
-// ============================================================
-// Public Method Implementation Interface - WORKSHEET
-// ============================================================
+    // ============================================================
+    // Public Method Implementation Interface - WORKSHEET
+    // ============================================================
+
+    public WorksheetProperties Worksheet_GetProperties(byte[] excelBinary, string sheetName)
+    { 
+        using (var package = Excel_Open(excelBinary))
+        {
+            ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
+            return GetWorksheetProperties(worksheet);
+        }       
+    }
 
     public byte[] Worksheet_Add(byte[] excelBinary, string? sheetName = null)
     {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        if(sheetName == null) {
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
+        if (sheetName == null)
+        {
             return AddSheets(Excel_Open(excelBinary), new Worksheet[0]);
-        } else {
+        }
+        else
+        {
             Worksheet[] worksheets = new Worksheet[1];
             worksheets[0].Name = sheetName;
             return AddSheets(Excel_Open(excelBinary), worksheets);
@@ -370,7 +414,7 @@ public class ExcelLibrary : IExcelLibrary
     public byte[] Worksheet_AddList(byte[] excelBinary, Worksheet[] worksheets)
     {
         if (worksheets.Length == 0) return excelBinary;
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
         return AddSheets(Excel_Open(excelBinary), worksheets);
     }
 
@@ -456,7 +500,7 @@ public class ExcelLibrary : IExcelLibrary
     {
         using (var package = Excel_Open(excelBinary))
         {
-            if(sheetName == null) {
+            if(sheetName == null || sheetName == "") {
                 package.Workbook.Worksheets.Delete(sheetIndex);
             } else {
                 ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
@@ -471,7 +515,7 @@ public class ExcelLibrary : IExcelLibrary
         using (var package = Excel_Open(excelBinary))
         {
             ExcelWorksheet worksheet;
-            if(sheetName == null) {
+            if(sheetName == null || sheetName == "") {
                 package.Workbook.Worksheets[sheetIndex].Name = newSheetName;
             } else {
                 worksheet = Worksheet_Select(package, sheetName);
@@ -487,7 +531,7 @@ public class ExcelLibrary : IExcelLibrary
         using (var package = Excel_Open(excelBinary))
         {
             ExcelWorksheet worksheet;
-            if(sheetName == null) {
+            if(sheetName == null || sheetName == "") {
                 worksheet = package.Workbook.Worksheets[sheetIndex];
             } else {
                 worksheet = Worksheet_Select(package, sheetName);
@@ -501,28 +545,100 @@ public class ExcelLibrary : IExcelLibrary
         }        
     }
 
-// ============================================================
-// Public Method Implementation Interface - CELL
-// ============================================================
+    private List<string> GetSheetName(byte[] ExcelFile)
+    {
+        List<string> sheetNames = new List<string>();
+        using (ExcelPackage package = Excel_Open(ExcelFile))
+        {
+            for (int sheetIndex = 0; sheetIndex < package.Workbook.Worksheets.Count; sheetIndex++)
+            {
+                sheetNames.Add(package.Workbook.Worksheets[sheetIndex].Name);
+            }
+        }
+        return sheetNames;
+    }
+
+    private string GetNewSheetName(List<string> sheetNames, string sheetName)
+    {
+        string newSheetName = sheetName;
+
+        int c1 = sheetNames.Count(o => o.StartsWith(sheetName));
+        int count = c1;
+
+        if (c1 >= 1)
+        {
+            // Console.WriteLine("Start With Count: " + c1);
+            int c2 = sheetNames.Count(o => o.Equals(sheetName));
+            if (c1 == 1 && c2 == 0) count = 0;
+            // Console.WriteLine("Equal Count: " + c2);
+        }
+        // Console.WriteLine("Final Count: " + count);
+
+        if (count > 0) newSheetName = sheetName + "-" + count.ToString();
+        return newSheetName;
+    }
+
+    public byte[] Worksheet_Copy(byte[] ExcelSource, string SourceSheetName, byte[] ExcelDestination)
+    {
+        using (var destPackage = Excel_Open(ExcelDestination))
+        {
+            List<string> destSheetNames = GetSheetName(ExcelDestination);
+
+            List<string> sourceSheetNames = new List<string>();
+            foreach (string x in SourceSheetName.Split(',').ToList())
+            {
+                sourceSheetNames.Add(x.Trim());
+            }
+
+            using (var sourcePackage = Excel_Open(ExcelSource))
+            {
+                for (int sheetIndex = 0; sheetIndex < sourcePackage.Workbook.Worksheets.Count; sheetIndex++)
+                {
+                    ExcelWorksheet excelWorksheet = sourcePackage.Workbook.Worksheets[sheetIndex];
+
+                    if (sourceSheetNames.Any(s => s.Contains(sourcePackage.Workbook.Worksheets[sheetIndex].Name)))
+                    {
+                        string newSheetName = GetNewSheetName(destSheetNames, excelWorksheet.Name);
+                        if (newSheetName != excelWorksheet.Name) destSheetNames.Add(newSheetName);
+
+                        ExcelWorksheet newExcelWorksheet = destPackage.Workbook.Worksheets.Add(newSheetName, excelWorksheet);
+                        newExcelWorksheet.TabColor = excelWorksheet.TabColor;                     
+
+                        // Console.WriteLine("Sheet Name: " + sourcePackage.Workbook.Worksheets[sheetIndex].Name + " Color: " + sourcePackage.Workbook.Worksheets[sheetIndex].TabColor.Name);
+                    }
+                }
+            }
+
+            return destPackage.GetAsByteArray();
+        }
+    }
+
+    // ============================================================
+    // Public Method Implementation Interface - CELL
+    // ============================================================
 
     public string Cell_Read(byte[] excelBinary, int cellRow = 0, int cellColumn = 0, string? cellName = null, string? sheetName = null)
     {
         using (var package = Excel_Open(excelBinary))
         {
             ExcelRange? excelRanges;
-            try {
+            try
+            {
                 excelRanges = Cell_Selections(package, cellRow, cellColumn, 0, 0, cellName ?? "", sheetName);
-            } catch {
+            }
+            catch
+            {
                 return "";
             }
-            
-            if(excelRanges == null) {
+
+            if (excelRanges == null)
+            {
                 return "";
             }
 
             string? cellValue = Convert.ToString(excelRanges.Value);
             if (cellValue == null) return "";
-            
+
             return cellValue;
         }
     }
@@ -592,6 +708,7 @@ public class ExcelLibrary : IExcelLibrary
                 
                 if(excelRanges == null) {
                     return package.GetAsByteArray();
+                    
                 }
 
                 if (cellWrite.CellFormat.CellType.ToLower() == "number")
@@ -1298,12 +1415,14 @@ public class ExcelLibrary : IExcelLibrary
 
     public CellRange Range_FromAddress(string Address) {
         CellRange cellRange = new CellRange();
-        ExcelPackage package = CreateDummyExcel();
-        ExcelRange? excelRanges = Cell_Selections(package, 0, 0, 0, 0, Address, "Sheet1");
-        if(excelRanges != null) { 
-            cellRange.StartCellRow = excelRanges.StartCellRow;
 
-        }
+        ExcelAddress excelAddress = new ExcelAddress(Address);
+
+        cellRange.StartCellColumn = excelAddress.Start.Column;
+        cellRange.StartCellRow = excelAddress.Start.Row;
+        cellRange.EndCellColumn = excelAddress.End.Column;
+        cellRange.EndCellRow = excelAddress.End.Row;
+
         return cellRange;
     }
 
@@ -1402,35 +1521,203 @@ public class ExcelLibrary : IExcelLibrary
     public byte[] Excel_Merge(ExcelMerge[] ExcelFiles)
     {
         List<string> sheetNames = new List<string>();
-        int dupCount = 1;
+        ExcelPackage.License.SetNonCommercialOrganization("OutSystems Community");
         using (ExcelPackage resultExcel = new ExcelPackage())
         {
-            foreach(ExcelMerge excelFile in ExcelFiles) {
-                using (var package = Excel_Open(excelFile.ExcelBinary)) {
-                    for(int sheetIndex=0; sheetIndex<package.Workbook.Worksheets.Count; sheetIndex++) {
+            foreach (ExcelMerge excelFile in ExcelFiles)
+            {
+                using (var package = Excel_Open(excelFile.ExcelBinary))
+                {
+                    for (int sheetIndex = 0; sheetIndex < package.Workbook.Worksheets.Count; sheetIndex++)
+                    {
                         ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[sheetIndex];
-                        string sheetName = excelWorksheet.Name;
+                        string sheetName = GetNewSheetName(sheetNames, excelWorksheet.Name);
                         // Console.WriteLine("Sheet: " + sheetName);
-                        foreach(string str in sheetNames) {
-                            if(str == sheetName) {
-                                sheetName = excelWorksheet.Name + "-" + dupCount.ToString();
-                                dupCount++;
-                                // Console.WriteLine("Sheet: " + sheetName + " Duplicate!");
-                            };
-                        }
                         sheetNames.Add(sheetName);
-                        // Console.WriteLine(sheetNames.Count);
-                        resultExcel.Workbook.Worksheets.Add(sheetName, excelWorksheet);
+                        //Console.WriteLine("========================");
+                        ExcelWorksheet newExcelWorksheet = resultExcel.Workbook.Worksheets.Add(sheetName, excelWorksheet);
+                        newExcelWorksheet.TabColor = excelWorksheet.TabColor;
                     }
-                }            
+                }
             }
             return resultExcel.GetAsByteArray();
         }
     }
 
-// ============================================================
-// Public Method Implementation Interface - Comment
-// ============================================================
+    private List<ExcelImages> GetAll_OverCell_Image(ExcelWorksheet excelWorksheet)
+    { 
+        string currentSheetName = excelWorksheet.Name;
+        List<ExcelImages> imageList = new List<ExcelImages>();
+        var pics = excelWorksheet.Drawings.Where(x => x.DrawingType == eDrawingType.Picture).Select(x => x.As.Picture);
+        foreach (var pic in pics)
+        {
+            if (pic.Image.HasImage)
+            {
+                ExcelImages excelImages = new ExcelImages();
+                excelImages.Image = pic.Image.ImageBytes;
+                excelImages.ImageName = pic.Name;
+                int Row = pic.From.Row;
+                int Column = pic.From.Column;
+                if (Row == 0) Row++;
+                if (Column == 0) Column++;
+                ExcelAddress excelAddress = new ExcelAddress(Row, Column, Row, Column);
+                excelImages.CellName = excelAddress.Address;
+                excelImages.SheetName = excelWorksheet.Name;
+                if (pic.Image.Type.HasValue) excelImages.ImageType = pic.Image.Type.Value.ToString();
+                excelImages.ImageWidth = pic.Image.Bounds.Width;
+                excelImages.ImageHeight = pic.Image.Bounds.Height;
+
+                Cell cell = new Cell();
+                cell.CellRow = Row;
+                cell.CellColumn = Column;
+                excelImages.Cell = cell;
+
+                imageList.Add(excelImages);
+            }
+        }
+        return imageList;
+    }
+
+    private List<ExcelImages> GetAll_InCell_Image(ExcelWorksheet excelWorksheet)
+    { 
+        string currentSheetName = excelWorksheet.Name;
+        List<ExcelImages> imageList = new List<ExcelImages>();
+        var objs = from cell in excelWorksheet.Cells[excelWorksheet.Cells.Address]
+                        where cell.Picture.Exists
+                        select cell;
+
+        foreach (var obj in objs)
+        {
+            if (obj.Picture.Exists)
+            {
+                var pic = obj.Picture.Get();
+                ExcelImages excelImages = new ExcelImages();
+                excelImages.Image = pic.GetImageBytes();
+                excelImages.ImageName = pic.FileName;
+                excelImages.CellName = obj.Address;
+                excelImages.SheetName = excelWorksheet.Name;
+                excelImages.ImageType = pic.PictureType.ToString();
+                excelImages.ImageWidth = 0;
+                excelImages.ImageHeight = 0;
+
+                ExcelAddress excelAddress = new ExcelAddress(obj.Address);
+                Cell cell = new Cell();
+                cell.CellRow = excelAddress.Start.Row;
+                cell.CellColumn = excelAddress.Start.Column;
+                excelImages.Cell = cell;
+
+                imageList.Add(excelImages);
+            }
+        }
+        return imageList;
+    }
+
+    public ExcelImages[] Image_GetAll_OverCell(byte[] excelBinary, string? sheetName = null)
+    {
+        List<ExcelImages> imageList = new List<ExcelImages>();
+        using (var package = Excel_Open(excelBinary))
+        {
+            if (sheetName == null || sheetName == "")
+            {
+                for (int sheetIndex = 0; sheetIndex < package.Workbook.Worksheets.Count; sheetIndex++)
+                {
+                    ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[sheetIndex];
+                    imageList.AddRange(GetAll_OverCell_Image(excelWorksheet));
+                }
+            }
+            else
+            {
+                ExcelWorksheet excelWorksheet = Worksheet_Select(package, sheetName);
+                imageList.AddRange(GetAll_OverCell_Image(excelWorksheet));
+            }
+        }
+        return imageList.ToArray();
+    }
+
+
+    public ExcelImages[] Image_GetAll_InCell(byte[] excelBinary, string? sheetName = null)
+    {
+        List<ExcelImages> imageList = new List<ExcelImages>();
+        using (var package = Excel_Open(excelBinary))
+        {
+            if (sheetName == null || sheetName == "")
+            {
+                for (int sheetIndex = 0; sheetIndex < package.Workbook.Worksheets.Count; sheetIndex++)
+                {
+                    ExcelWorksheet excelWorksheet = package.Workbook.Worksheets[sheetIndex];
+                    imageList.AddRange(GetAll_InCell_Image(excelWorksheet));
+                }
+            }
+            else
+            {
+                ExcelWorksheet excelWorksheet = Worksheet_Select(package, sheetName);
+                imageList.AddRange(GetAll_InCell_Image(excelWorksheet));
+            }
+        }
+        return imageList.ToArray();
+    }
+
+    // TODO
+    public ExcelImages Image_Get(byte[] excelBinary, int cellRow = 0, int cellColumn = 0, string? cellName = null, string? sheetName = null)
+    {
+        
+        using (var package = Excel_Open(excelBinary))
+        {
+
+            ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
+
+            ExcelRange? excelRanges;
+            try {
+                excelRanges = Cell_Selections(package, cellRow, cellColumn, 0, 0, cellName ?? "", sheetName);
+            } catch {
+                return new ExcelImages();
+            }
+            
+            if(excelRanges == null) {
+                return new ExcelImages();
+            }
+
+            if (excelRanges.Picture.Exists)
+            {
+                // Console.WriteLine("In Cell Image");
+                var pic = excelRanges.Picture.Get();
+                ExcelImages excelImages = new ExcelImages();
+                excelImages.Image = pic.GetImageBytes();
+                excelImages.ImageName = pic.FileName;
+                excelImages.CellName = excelRanges.Address;
+                excelImages.SheetName = worksheet.Name;
+                excelImages.ImageType = pic.PictureType.ToString();
+                excelImages.ImageWidth = 0;
+                excelImages.ImageHeight = 0;
+
+                ExcelAddress excelAddress = new ExcelAddress(excelRanges.Address);
+                Cell cell = new Cell();
+                cell.CellRow = excelAddress.Start.Row;
+                cell.CellColumn = excelAddress.Start.Column;
+                excelImages.Cell = cell;
+
+                return excelImages;
+            }
+            else
+            {
+                // Console.WriteLine("Over Cell Image");
+                List<ExcelImages> imageList = new List<ExcelImages>();
+                imageList.AddRange(GetAll_OverCell_Image(worksheet));
+                var filterImageList = imageList.Where(p => ((p.Cell.CellRow == cellRow && p.Cell.CellColumn == cellColumn) || p.CellName == cellName));
+                if (filterImageList.Count() > 0)
+                {
+                    return filterImageList.ToArray()[0];
+                }
+                else return new ExcelImages();
+            }
+        }
+    }
+
+
+
+    // ============================================================
+    // Public Method Implementation Interface - Comment
+    // ============================================================
 
     public byte[] Comment_Add(byte[] excelBinary, CommentAdd[] commentAdds)
     {
@@ -1438,16 +1725,21 @@ public class ExcelLibrary : IExcelLibrary
         {
             ExcelRange? excelRanges;
 
-            foreach(CommentAdd commentAdd in commentAdds) {
+            foreach (CommentAdd commentAdd in commentAdds)
+            {
                 ExcelWorksheet worksheet = Worksheet_Select(package, commentAdd.SheetName);
 
-                try {
+                try
+                {
                     excelRanges = Cell_Selections(package, commentAdd.Cell.CellRow, commentAdd.Cell.CellColumn, 0, 0, commentAdd.CellName ?? "", commentAdd.SheetName);
-                } catch {
+                }
+                catch
+                {
                     return package.GetAsByteArray();
                 }
-                
-                if(excelRanges == null) {
+
+                if (excelRanges == null)
+                {
                     return package.GetAsByteArray();
                 }
 
@@ -1455,7 +1747,7 @@ public class ExcelLibrary : IExcelLibrary
 
             }
             return package.GetAsByteArray();
-        }        
+        }
     }
 
     public byte[] Comment_Delete(byte[] excelBinary, CommentDelete[] commentDeletes)
