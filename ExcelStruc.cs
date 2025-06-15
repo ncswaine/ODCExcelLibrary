@@ -7,9 +7,13 @@ namespace OutSystems.ExternalLib.Excel
     [OSStructure]
     public struct TabProperties
     {
+        [OSStructureField(Description = "Default Value is 0", OriginalName = "ColorR")]        
         public int ColorR;
+        [OSStructureField(Description = "Default Value is 0", OriginalName = "ColorG")]
         public int ColorG;
+        [OSStructureField(Description = "Default Value is 0", OriginalName = "ColorB")]
         public int ColorB;
+        [OSStructureField(Description = "Default Value is 0", OriginalName = "ColorA")]
         public int ColorA;
         public string ColorHex;
     }
@@ -21,8 +25,10 @@ namespace OutSystems.ExternalLib.Excel
         public string AddressStart;
         public string AddressEnd;
         public string FullAddress;
+        [OSStructureField(Description = "Column A is 1", OriginalName = "ColumnStart")]
         public int ColumnStart;
         public int ColumnEnd;
+        [OSStructureField(Description = "Row start from 1", OriginalName = "RowStart")]
         public int RowStart;
         public int RowEnd;
     }
@@ -31,6 +37,7 @@ namespace OutSystems.ExternalLib.Excel
     public struct WorksheetProperties
     {
         public string Name;
+        [OSStructureField(Description = "Default Value is 0", OriginalName = "Index")]
         public int Index;
         public TabProperties TabProperties;
         public DimensionProperties DimensionProperties;
