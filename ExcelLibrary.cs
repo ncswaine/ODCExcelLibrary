@@ -956,13 +956,13 @@ public class ExcelLibrary : IExcelLibrary
 // Public Method Implementation Interface - ROW
 // ============================================================
 
-    public byte[] Row_Delete(byte[] excelBinary, int rowIndex, string? sheetName = null)
+    public byte[] Row_Delete(byte[] excelBinary, int rowIndex, string? sheetName = null, int? countRowsToDelete = 1)
     {
         if(rowIndex < 1) return excelBinary;        
         using (var package = Excel_Open(excelBinary))
         {
             ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
-            worksheet.DeleteRow(rowIndex);
+            worksheet.DeleteRow(rowIndex, countRowsToDelete);
             return package.GetAsByteArray();
         }
     }
