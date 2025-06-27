@@ -118,7 +118,7 @@ namespace OutSystems.ExternalLib.Excel {
                 // ============================================================
 
                 [OSAction(ReturnName = "ExcelFile", OriginalName = "Row_Delete", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Delete Row on specific Row Index")]
-                public byte[] Row_Delete(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, string? sheetName = null);
+                public byte[] Row_Delete(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, string? sheetName = null, int? countRows = 1);
 
                 [OSAction(ReturnName = "ExcelFile", OriginalName = "Row_Hide_Show", IconResourceName = "ODCExcelLibrary.resources.excel.png", Description = "Hide or Show Row on specific Row Index")]
                 public byte[] Row_Hide_Show(byte[] excelBinary, [OSParameter(DataType = OSDataType.Integer, Description = "Row Index start from 1")] int rowIndex, bool isShow = false, string? sheetName = null);
