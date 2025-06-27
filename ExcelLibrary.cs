@@ -958,11 +958,11 @@ public class ExcelLibrary : IExcelLibrary
 
     public byte[] Row_Delete(byte[] excelBinary, int rowIndex, string? sheetName = null, int? countRowsToDelete = 1)
     {
-        if(rowIndex < 1) return excelBinary;        
+        if(rowIndex < 1 || countRowsToDelete is null) return excelBinary;        
         using (var package = Excel_Open(excelBinary))
         {
             ExcelWorksheet worksheet = Worksheet_Select(package, sheetName);
-            worksheet.DeleteRow(rowIndex, countRowsToDelete);
+            worksheet.DeleteRow(rowIndex, (int)countRowsToDelete);
             return package.GetAsByteArray();
         }
     }
